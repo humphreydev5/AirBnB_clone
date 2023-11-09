@@ -62,4 +62,29 @@ EOF  help  quit
 (hbnb) 
 $
 ```
+### Concepts to know about the this perticular project
 
+- Unittest - and please work all together on tests cases
+- Python packages concept page
+- Serialization/Deserialization
+- *args, **kwargs
+- datetime
+- More coming soon!
+
+## *args, **kwargs
+
+### how to use them 
+
+```
+def my_fct(param_1, param_2):
+    ...
+
+my_fct("Best", "School")
+```
+
+```
+def my_fct(*args, **kwargs):
+    ...
+
+my_fct("Best", "School")
+```
