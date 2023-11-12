@@ -1,25 +1,20 @@
 #!/usr/bin/python3
-''' BaseModel that defines all common attributes/methods
-for other classes'''
+''' module for BaseModel class '''
 from uuid import uuid4
 from datetime import datetime
 
 
 class BaseModel:
-    """Defining a class base model"""
+    ''' class of the base model of higher-level data models '''
     def __init__(self, *arg, **kwargs):
-        """Initialization of base class instance
-        Args:
-            *args: arguments
-            **kwargs: key-value arguments
-        """
-        from . import storage  # Import with the methond
+        ''' BaseModel constructor '''
+        from . import storage
         if kwargs:
-            for key in kwargs:
-                if key in ['created_at', 'updated_at']:
-                    setattr(self, key, datetime.fromisoformat(value))
-                elif key != '__class__':
-                    setattr(self, key, kwargs[k])
+            for k in kwargs:
+                if k in ['created_at', 'updated_at']:
+                    setattr(self, k, datetime.fromisoformat(kwargs[k]))
+                elif k != '__class__':
+                    setattr(self, k, kwargs[k])
         else:
             self.id = str(uuid4())
             self.created_at = datetime.now()
@@ -27,13 +22,13 @@ class BaseModel:
             storage.new(self)
 
     def save(self):
-        """Defining save method"""
+        '''saves the changes made to this model's instance'''
         from models import storage
         self.updated_at = datetime.now()
         storage.save()
 
     def to_dict(self):
-        """Defining to_dict method"""
+        ''' returns a dictionary representation of the model '''
         dct = self.__dict__.copy()
         dct['__class__'] = self.__class__.__name__
         for k in dct:
