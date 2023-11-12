@@ -1,25 +1,49 @@
-#!/usr/bin/python
-# file: modle/engine
-# Auth: kelechi nnadi <@alx swe>
-
-""" storing file in the engine """
+#!/usr/bin/python3
+"""Defines the FileStorage class."""
 import json
-from models import BaseModel
+from models.base_model import BaseModel
+from models.user import User
+from models.state import State
+from models.city import City
+from models.place import Place
+from models.amenity import Amenity
+from models.review import Review
+
 
 class FileStorage:
-    """ defining the storage class to store data
-    """
+    """Represent an abstracted storage engine.
 
+    Attributes:
+        __file_path (str): The name of the file to save objects to.
+        __objects (dict): A dictionary of instantiated objects.
+    """
     __file_path = "file.json"
     __objects = {}
 
     def all(self):
-        """ defintion of all attr"""
-
+        """Return the dictionary __objects."""
         return FileStorage.__objects
 
     def new(self, obj):
-        """define the new method"""
+        """Set in __objects obj with key <obj_class_name>.id"""
+        ocname = obj._class.__name_
+        FileStorage.__objects["{}.{}".format(ocname, obj.id)] = obj
 
-        key == "{}.{}".format(obj._class_._name_, obj.id)
-        FileStorage.__object[key] = obj
+    def save(self):
+        """Serialize __objects to the JSON file __file_path."""
+        odict = FileStorage.__objects
+        objdict = {obj: odict[obj].to_dict() for obj in odict.keys()}
+        with open(FileStorage.__file_path, "w") as f:
+            json.dump(objdict, f)
+
+    def reload(self):
+        """Deserialize the JSON file __file_path to __objects, if it exists."""
+        try:
+            with open(FileStorage.__file_path) as f:
+                objdict = json.load(f)
+                for o in objdict.values():
+                    cls_name = o["_class_"]
+                    del o["_class_"]
+                    self.new(eval(cls_name)(**o))
+        except FileNotFoundError:
+            return
